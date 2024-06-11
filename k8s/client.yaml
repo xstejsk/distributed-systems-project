@@ -15,7 +15,7 @@ kind: Deployment
 metadata:
   name: client-deployment
 spec:
-  replicas: 2
+  replicas: 1 
   selector:
     matchLabels:
       app: client
@@ -25,10 +25,21 @@ spec:
         app: client
     spec:
       containers:
-        - name: client
-          image: https://europe-west1-docker.pkg.dev/civil-song-423915-i3/my-repo/client:latest
+        - name: client-1
+          image: europe-west1-docker.pkg.dev/civil-song-423915-i3/my-repo/client:latest
           ports:
             - containerPort: 8082
+          env:
+            - name: account-id
+              value: "1"
+            - name: deposit-uri
+              value: http://manager-service:8080/api/v1/accounts/{account-id}/deposits
+            - name: withdraw-uri
+              value: http://manager-service:8080/api/v1/accounts/{account-id}/withdrawals
+        - name: client-2
+          image: europe-west1-docker.pkg.dev/civil-song-423915-i3/my-repo/client:latest
+          ports:
+            - containerPort: 8083
           env:
             - name: account-id
               value: "1"

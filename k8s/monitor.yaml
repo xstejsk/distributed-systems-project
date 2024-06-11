@@ -3,12 +3,13 @@ kind: Service
 metadata:
   name: monitor-service
 spec:
+  type: LoadBalancer  # Changed from NodePort to LoadBalancer
   selector:
     app: monitor
   ports:
     - protocol: TCP
-      port: 8001
-      targetPort: 8001
+      port: 80  # Expose the service on port 80, the default HTTP port
+      targetPort: 8001  # Port on which your application is running
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -26,11 +27,11 @@ spec:
     spec:
       containers:
         - name: monitor
-          image: https://europe-west1-docker.pkg.dev/civil-song-423915-i3/my-repo/monitor:latest
+          image: europe-west1-docker.pkg.dev/civil-song-423915-i3/my-repo/monitor:latest
           ports:
             - containerPort: 8001
           env:
-            - name: BACKEND_URL
-              value: http://manager-service:8080/
+            # - name: REACT_APP_BACKEND_URL
+            #   value: http://manager-service:8080
             - name: DEBUG
               value: "false"
